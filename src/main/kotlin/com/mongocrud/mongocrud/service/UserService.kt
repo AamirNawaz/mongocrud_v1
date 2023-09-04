@@ -10,30 +10,26 @@ import org.springframework.stereotype.Service
 class UserService (private val userRepo :UserRepository ){
 
     //Get Users
-    fun getAllUsers():List<User>{
+    fun getAllUsers():List<User> {
         return userRepo.findAll()
     }
 
     //Get User by Id
-    fun getUserById(id : String):User?{
-        return userRepo.findByIdOrNull(id)
-    }
+    fun getUserById(id : String):User? = userRepo.findByIdOrNull(id)
+
 
     //Get Users Counts
-    fun getUsersCount():Int{
-        return userRepo.findAll().count()
-    }
+    fun getUsersCount():Int = userRepo.findAll().count()
+
 
     //Save User
-    fun saveUser(user: User):User{
-          return userRepo.save(user)
-    }
+    fun saveUser(user: User):User =userRepo.save(user)
 
-    fun deleteUser(id: String){
-        return userRepo.deleteById(id)
-    }
 
-    fun updateUser(user: User): User {
-       return userRepo.save(user)
-    }
+    //delete user
+    fun deleteUser(id: String) = userRepo.deleteById(id)
+
+    //update user
+    fun updateUser(user: User) = userRepo.save(user)
+
 }

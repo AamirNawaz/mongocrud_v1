@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(@Autowired val userSrv:UserService) {
-    //With ResponseEntity @GetMapping
+    //With ResponseEntity
+    @GetMapping
     fun getUsers(): List<User> {
         return userSrv.getAllUsers()
     }
