@@ -2,20 +2,17 @@ package com.mongocrud.mongocrud.controller
 
 import com.mongocrud.mongocrud.model.User
 import com.mongocrud.mongocrud.service.UserService
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
+@Validated
 class UserController(@Autowired val userSrv:UserService) {
     //With ResponseEntity
     @GetMapping
@@ -34,9 +31,11 @@ class UserController(@Autowired val userSrv:UserService) {
         return userSrv.getUsersCount()
     }
 
-    @PostMapping("add")
-    fun saveUser(@RequestBody user: User ): User {
-       return userSrv.saveUser(user)
+    @PostMapping("/add")
+    fun saveUser(@Valid @RequestBody user: User ): ResponseEntity<String> {
+      userSrv.saveUser(user)
+        return ResponseEntity.ok("User created successfully")
+
     }
 
     @DeleteMapping("/{id}")
@@ -56,5 +55,16 @@ class UserController(@Autowired val userSrv:UserService) {
          ResponseEntity(HttpStatus.NOT_FOUND)
      }
     }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<Map<String, String>> {
+        val errors = ex.bindingResult.fieldErrors.map { fieldError ->
+            fieldError.field to fieldError.defaultMessage.orEmpty()
+        }.toMap()
+
+        return ResponseEntity(errors, HttpStatus.BAD_REQUEST)
+    }
+
 
 }
