@@ -26,7 +26,7 @@ class PaginationController (val userPaginationRepo : UserPaginationRepository){
     @RequestMapping("/dynamic")
     fun dynamicPagination(@RequestParam (defaultValue ="1" )page:Int, @RequestParam(defaultValue = "5") size :Int)= userPaginationRepo.findAll(
         PageRequest.of(
-            page,
+            page - 1,
             size,
             Sort.by("semesterGpa").descending().and(Sort.by("id"))
         )
